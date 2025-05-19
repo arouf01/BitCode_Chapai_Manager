@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BITCODE Manager Lottery</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      #container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        width: 420px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h2 {
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      #memberList,
+      #resultList {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 0;
+        margin: 0 0 20px 0;
+        width: 100%;
+        list-style: none;
+      }
+
+      #memberList li,
+      #resultList li {
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 6px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      #resultList li {
+        animation: fadeIn 0.8s ease;
+        background: #d2f8d2;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      button {
+        padding: 12px 20px;
+        font-size: 16px;
+        background: linear-gradient(45deg, #ff6ec4, #7873f5);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      #loading {
+        display: none;
+        font-weight: bold;
+        margin: 10px 0;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h2>📋 BITCODE Manager Lottery</h2>
+
+      <ul id="memberList"></ul>
+
+      <div id="loading">Drawing...</div>
+      <button onclick="startLottery()">Start Lottery</button>
+
+      <h2>📋 Assigned Months</h2>
+      <ul id="resultList"></ul>
+    </div>
+
+    <script>
+      const names = [
+        "Abdul Malek",
+        "Oyes",
+        "Morshed",
+        "Kamruzzaman",
+        "Almizan",
+        "Hozaifa",
+        "Abdur Rouf",
+        "Hazrat",
+        "Limon",
+        "Raihan",
+        "Naim",
+        "Abdul Ahad",
+      ];
+
+      const months = [];
+      const start = new Date(2025, 5); // June 2025
+      for (let i = 0; i < 12; i++) {
+        const date = new Date(start.getFullYear(), start.getMonth() + i);
+        const monthLabel = date.toLocaleString("default", {
+          month: "long",
+          year: "numeric",
+        });
+        months.push(monthLabel);
+      }
+
+      let drawCount = 0;
+
+      const memberList = document.getElementById("memberList");
+      const resultList = document.getElementById("resultList");
+      const loading = document.getElementById("loading");
+      const button = document.querySelector("button");
+
+      function populateMemberList() {
+        memberList.innerHTML = "";
+        names.forEach((name) => {
+          const li = document.createElement("li");
+          li.textContent = name;
+          memberList.appendChild(li);
+        });
+      }
+
+      async function startLottery() {
+        if (names.length === 0 || drawCount >= months.length) {
+          alert("🎯 All team members and months have been assigned.");
+          return;
+        }
+
+        button.disabled = true;
+        loading.style.display = "block";
+
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay
+
+        const index = Math.floor(Math.random() * names.length);
+        const selectedName = names.splice(index, 1)[0];
+        const assignedMonth = months[drawCount++];
+
+        const resultItem = document.createElement("li");
+        resultItem.innerHTML = `✔ <strong>${assignedMonth}</strong><br>${selectedName}`;
+        resultList.appendChild(resultItem);
+
+        populateMemberList();
+
+        loading.style.display = "none";
+        button.disabled = false;
+      }
+
+      populateMemberList();
+    </script>
+  </body>
+</html>
