@@ -12,6 +12,7 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
+        overflow: auto;
       }
 
       #container {
@@ -90,11 +91,35 @@
         margin: 10px 0;
         color: #555;
       }
+
+      #logo {
+        width: 109px;
+        height: 36px;
+        padding-top: 50px;
+      }
+
+      #title {
+        margin-bottom: 30px;
+      }
+
+      #congratulations {
+        font-size: 18px;
+        font-weight: bold;
+        color: #4caf50;
+        display: none;
+        margin-top: 20px;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
     <div id="container">
-      <h2>📋 BITCODE Manager Lottery</h2>
+      <img
+        id="logo"
+        src="https://bitcode.pro/wp-content/uploads/2024/03/Bit-Code-Technologies-FZ-LLC.png"
+        alt="BITCODE Logo"
+      />
+      <h2 id="title">BITCODE Manager Lottery</h2>
 
       <ul id="memberList"></ul>
 
@@ -103,6 +128,10 @@
 
       <h2>📋 Assigned Months</h2>
       <ul id="resultList"></ul>
+
+      <div id="congratulations">
+        🎉 Congratulations! The lottery is complete! 🎉
+      </div>
     </div>
 
     <script>
@@ -133,11 +162,13 @@
       }
 
       let drawCount = 0;
+      let firstWinner = null;
 
       const memberList = document.getElementById("memberList");
       const resultList = document.getElementById("resultList");
       const loading = document.getElementById("loading");
       const button = document.querySelector("button");
+      const congratulations = document.getElementById("congratulations");
 
       function populateMemberList() {
         memberList.innerHTML = "";
@@ -157,20 +188,29 @@
         button.disabled = true;
         loading.style.display = "block";
 
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const index = Math.floor(Math.random() * names.length);
         const selectedName = names.splice(index, 1)[0];
         const assignedMonth = months[drawCount++];
 
         const resultItem = document.createElement("li");
-        resultItem.innerHTML = `✔ <strong>${assignedMonth}</strong><br>${selectedName}`;
+        resultItem.innerHTML = `✔️ <strong>${assignedMonth}</strong><br>${selectedName}`;
         resultList.appendChild(resultItem);
 
         populateMemberList();
 
         loading.style.display = "none";
         button.disabled = false;
+
+        if (drawCount === 1) {
+          firstWinner = { name: selectedName, month: assignedMonth };
+        }
+
+        if (drawCount >= months.length) {
+          congratulations.textContent = `🎉 Congratulations! ${firstWinner.name} for ${firstWinner.month} manager. The lottery is complete! 🎉`;
+          congratulations.style.display = "block";
+        }
       }
 
       populateMemberList();
